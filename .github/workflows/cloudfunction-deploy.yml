@@ -37,9 +37,6 @@ jobs:
 
       - name: Write backend config
         run: |
-          if [ ! -d terraform-gcp-cloudfunctions ]; then
-            mkdir terraform-gcp-cloudfunctions
-          fi
           echo -e "organization = \"${{ secrets.TFC_ORG }}\"\nworkspaces {\n  name = \"${{ secrets.TFC_WORKSPACE }}\"\n}" > terraform-gcp-cloudfunctions/backend.hcl
 
       - name: Initialize Terraform
