@@ -15,7 +15,7 @@ variable "function_name" {
 
 variable "entry_point"{
   description = "The name of the Artifact Registry Docker repository."
-  default = "main"
+  default = "app"
 }
 
 variable "source_dir" {
