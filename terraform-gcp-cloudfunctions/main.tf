@@ -8,6 +8,12 @@ resource "google_storage_bucket" "function_source" {
   location = var.region
   force_destroy = true
 }
+resource "google_storage_bucket_object" "archive" {
+  bucket = google_storage_bucket.function_source.name
+  name   = var.function_zip_name
+  source = data.archive_file.function.output_path
+}
+
 
 resource "google_cloudfunctions2_function" "default" {
   name        = var.function_name
@@ -45,12 +51,8 @@ resource "google_cloudfunctions2_function" "default" {
 
 data "archive_file" "function" {
   type        = "zip"
-  source_dir  = "${path.module}/../${replace(var.function_zip_name, ".zip", "")}"
+  source_dir  = "${path.module}/.."  # points to contactApi root where main.py lives
   output_path = "${path.module}/../${var.function_zip_name}"
 }
 
-resource "google_storage_bucket_object" "archive" {
-  bucket = google_storage_bucket.function_source.name
-  name   = var.function_zip_name
-  source = data.archive_file.function.output_path
-}
+
