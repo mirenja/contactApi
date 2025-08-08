@@ -2,7 +2,8 @@ Flask==2.3.2
 flask-cors==4.0.0
 python-dotenv==1.0.1
 pymongo==4.7.2
-functions-framework==3.4.0blinker==1.9.0
+functions-framework==3.4.0
+blinker==1.9.0
 click==8.2.2
 dnspython==2.7.0
 Flask==3.1.1
