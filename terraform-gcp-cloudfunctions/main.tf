@@ -42,13 +42,19 @@ resource "google_cloudfunctions2_function" "default" {
     ingress_settings   = "ALLOW_ALL"
   }
 
-  https_trigger {}
 }
 
 data "archive_file" "function" {
   type        = "zip"
   source_dir  = "${path.module}/.."  # points to contactApi root where main.py lives
   output_path = "${path.module}/../${var.function_zip_name}"
+}
+
+resource "google_cloud_run_service_iam_member" "member" {
+  location = google_cloudfunctions2_function.default.location
+  service  = google_cloudfunctions2_function.default.name
+  role     = "roles/run.invoker"
+  member   = "allUsers" 
 }
 
 
