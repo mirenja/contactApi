@@ -1,0 +1,13 @@
+.env
+.DS_Store 
+__pycache__
+
+gcloud.txt
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+prod.tfvars
+backend.hcl
+venv
+
