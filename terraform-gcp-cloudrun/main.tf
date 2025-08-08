@@ -3,86 +3,48 @@ provider "google" {
   region  = var.region
 }
 
-
-# enable the API
-
-resource "google_project_service" "cloud_run_api" {
-  project = var.project_id
-  service = "run.googleapis.com"
-  disable_on_destroy = false 
-}
-variable "create_repo" {
-  type    = bool
-  default = true
-}
-
-resource "google_project_service" "artifact_registry_api" {
-  project = var.project_id
-  service = "artifactregistry.googleapis.com"
-  disable_on_destroy = false 
-}
-
-# artifact repository
-resource "google_artifact_registry_repository" "docker_repo" {
-  count         = var.create_repo ? 1 : 0
-  project       = var.project_id
-  location      = var.region 
-  repository_id = var.artifact_registry_repo_name
-  format        = "DOCKER" 
-
-  depends_on = [google_project_service.artifact_registry_api]
-}
-
-# Cloud Run
-
-resource "google_cloud_run_service" "service"{
-  project  = var.project_id
+resource "google_storage_bucket" "function_source" {
+  name     = "${var.project_id}-function-source"
   location = var.region
-  name     = var.service_name
+  force_destroy = true
+}
 
-  template {
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/minScale" = tostring(var.min_instances)
-        "autoscaling.knative.dev/maxScale" = tostring(var.max_instances)
+resource "google_storage_bucket_object" "archive" {
+  name   = "${var.function_name}.zip"
+  bucket = google_storage_bucket.function_source.name
+  source = "${var.source_dir}${var.function_name}.zip"
+}
+
+resource "google_cloudfunctions2_function" "default" {
+  name        = var.function_name
+  location    = var.region
+  description = "Contact API Flask function"
+
+  build_config {
+    runtime     = "python311"
+    entry_point = var.entry_point
+    source {
+      storage_source {
+        bucket = google_storage_bucket.function_source.name
+        object = google_storage_bucket_object.archive.name
       }
     }
-
-    spec {
-      containers {
-        image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.artifact_registry_repo_name}/${var.image_name}"
-
-        ports {
-          container_port = var.container_port
-        }
-      }
+    environment_variables = {
+      FRONTEND_ORIGIN = var.frontend_origin
+      MONGODB_URI     = var.mongodb_uri
     }
   }
-  # route 100% of traffic to the latest ready revision
-  traffic {
-    percent = 100
-    latest_revision = true
+
+  service_config {
+    max_instance_count = 2
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    ingress_settings   = "ALLOW_ALL"
   }
 
-  depends_on = [
-    google_project_service.cloud_run_api,
-    google_artifact_registry_repository.docker_repo,
-  ]
+  event_trigger {
+    trigger_region = var.region
+    event_type     = "google.cloud.functions.v2.http.v1.HTTP_REQUEST"
+    retry_policy   = "RETRY_POLICY_DO_NOT_RETRY"
+  }
 }
-
-# I AM
-resource "google_cloud_run_service_iam_member" "allow_unauthenticated" {
-  project  = var.project_id
-  location = var.region
-  service  = var.service_name
-  role     = "roles/run.invoker"
-  member   = "allUsers"
-
-  #Check Cloud Run service is created before attempting to set its IAM policy
-  depends_on = [google_cloud_run_service.service]
-}
-
-terraform {
-  backend "remote" {}
-}
-

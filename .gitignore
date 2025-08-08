@@ -10,4 +10,5 @@ terraform.tfstate.backup
 prod.tfvars
 backend.hcl
 venv
+.env
 

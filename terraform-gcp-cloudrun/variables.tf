@@ -8,41 +8,31 @@ variable "region" {
   type        = string
 }
 
-variable "service_name" {
+variable "function_name" {
   description = "The name of the Cloud Run service."
-  type        = string
+   default = "contact-api-fn"
 }
 
-variable "artifact_registry_repo_name" {
+variable "entry_point"{
   description = "The name of the Artifact Registry Docker repository."
-  type        = string
+  default = "main"
 }
 
-variable "image_name" {
+variable "source_dir" {
   description = "The name and tag of the Docker image."
+  default = "../"
+}
+
+
+variable "frontend_origin" {
   type        = string
-}
-
-variable "container_port" {
-  description = "The port your application listens on inside the container."
-  type        = number
-  default     = 80
-}
-
-variable "min_instances" {
-  description = "The minimum number of container instances for Cloud Run."
-  type        = number
-  default     = 2
-}
-
-variable "max_instances" {
-  description = "The maximum number of container instances for Cloud Run."
-  type        = number
-  default     = 5
+  description = "Allowed CORS origin"
 }
 
 
-
-
+variable "mongodb_uri" {
+  type        = string
+  description = "MongoDB URI"
+}
 
 
