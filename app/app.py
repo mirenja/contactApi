@@ -13,7 +13,8 @@ collection = db["contacts"]
 app = Flask(__name__)
 app.config.from_object('config')
 frontend_origin = os.getenv("FRONTEND_ORIGIN")
-print(f"frontend origin {frontend_origin}")
+port = int(os.environ.get('PORT'))
+# print(f"frontend origin {frontend_origin}")
 
 CORS(app,
      supports_credentials=True,
@@ -50,4 +51,4 @@ def contact():
 
 
 if __name__ == '__main__':
-  app.run(host="0.0.0.0", port=5002, debug=True)
+  app.run(host="0.0.0.0", port=port, debug=True)

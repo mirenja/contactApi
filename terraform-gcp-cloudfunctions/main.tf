@@ -32,6 +32,7 @@ resource "google_cloudfunctions2_function" "default" {
     environment_variables = {
       FRONTEND_ORIGIN = var.frontend_origin
       MONGODB_URI     = var.mongodb_uri
+      PORT = var.port
     }
   }
 
