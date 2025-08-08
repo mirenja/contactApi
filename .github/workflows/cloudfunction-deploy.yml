@@ -41,25 +41,12 @@ jobs:
         run: |
           echo -e "organization = \"${{ secrets.TFC_ORG }}\"\nworkspaces {\n  name = \"${{ secrets.TFC_WORKSPACE }}\"\n}" > terraform-gcp-cloudfunctions/backend.hcl
 
-     
-
       - name: Initialize Terraform
         run: terraform init -input=false -backend-config=backend.hcl
         working-directory: ./terraform-gcp-cloudfunctions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
       
-      - name: Check if GCS bucket exists and import if needed
-        working-directory: ./terraform-gcp-cloudfunctions
-        run: |
-          BUCKET_NAME="${{ secrets.GCP_PROJECT_ID }}-function-source"
-          if gsutil ls -b gs://$BUCKET_NAME >/dev/null 2>&1; then
-            echo "Bucket exists, importing into Terraform state"
-            terraform import google_storage_bucket.function_source $BUCKET_NAME || echo "Import failed or already imported, continuing"
-          else
-            echo "Bucket does not exist, no import needed"
-          fi
-
       - name: Terraform Validate
         run: terraform validate
         working-directory: ./terraform-gcp-cloudfunctions
