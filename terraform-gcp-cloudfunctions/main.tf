@@ -42,11 +42,7 @@ resource "google_cloudfunctions2_function" "default" {
     ingress_settings   = "ALLOW_ALL"
   }
 
-  event_trigger {
-    trigger_region = var.region
-    event_type     = "google.cloud.functions.v2.http.v1.HTTP_REQUEST"
-    retry_policy   = "RETRY_POLICY_DO_NOT_RETRY"
-  }
+  https_trigger {}
 }
 
 data "archive_file" "function" {
