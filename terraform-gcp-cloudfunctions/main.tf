@@ -9,12 +9,6 @@ resource "google_storage_bucket" "function_source" {
   force_destroy = true
 }
 
-resource "google_storage_bucket_object" "archive" {
-  name   = "${var.function_name}.zip"
-  bucket = google_storage_bucket.function_source.name
-  source = "${var.source_dir}${var.function_name}.zip"
-}
-
 resource "google_cloudfunctions2_function" "default" {
   name        = var.function_name
   location    = var.region
