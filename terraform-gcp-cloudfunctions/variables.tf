@@ -36,3 +36,15 @@ variable "mongodb_uri" {
 }
 
 
+variable "function_zip_name" {
+  description = "Name of the Cloud Function zip archive file"
+  type        = string
+}
+
+variable "function_zip_path" {
+  description = "Relative path to the Cloud Function zip archive file"
+  type        = string
+}
+
+
+

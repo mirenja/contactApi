@@ -48,3 +48,15 @@ resource "google_cloudfunctions2_function" "default" {
     retry_policy   = "RETRY_POLICY_DO_NOT_RETRY"
   }
 }
+
+data "archive_file" "function" {
+  type        = "zip"
+  source_dir  = "${path.module}/../${replace(var.function_zip_name, ".zip", "")}"
+  output_path = "${path.module}/../${var.function_zip_name}"
+}
+
+resource "google_storage_bucket_object" "archive" {
+  bucket = google_storage_bucket.function_source.name
+  name   = var.function_zip_name
+  source = data.archive_file.function.output_path
+}
