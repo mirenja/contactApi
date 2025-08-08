@@ -42,10 +42,10 @@ jobs:
           echo -e "organization = \"${{ secrets.TFC_ORG }}\"\nworkspaces {\n  name = \"${{ secrets.TFC_WORKSPACE }}\"\n}" > terraform-gcp-cloudfunctions/backend.hcl
 
       - name: Check if GCS bucket exists and import if needed
-        working-directory: ${{ env.TF_WORKING_DIR }}
+        working-directory: ./terraform-gcp-cloudfunctions
         run: |
           BUCKET_NAME="${{ secrets.GCP_PROJECT_ID }}-function-source"
-          
+
           if gsutil ls -b gs://$BUCKET_NAME >/dev/null 2>&1; then
             echo "Bucket exists, importing into Terraform state"
             terraform import google_storage_bucket.function_source $BUCKET_NAME || echo "Import failed or already imported, continuing"
