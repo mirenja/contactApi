@@ -30,7 +30,8 @@ variable "frontend_origin" {
 }
 
 variable "port" {
-  type = int
+  description = "Port the function should listen on"
+  type = number
   
 }
 
