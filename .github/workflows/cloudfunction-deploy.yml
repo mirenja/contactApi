@@ -9,7 +9,6 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: ${{ secrets.GCP_REGION }}
   FRONTEND_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
-  PORT: ${{ secrets.PORT }}
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
   FUNCTION_ZIP_NAME: ${{ secrets.FUNCTION_ZIP_NAME }}
   
