@@ -29,11 +29,7 @@ variable "frontend_origin" {
   description = "Allowed CORS origin"
 }
 
-variable "port" {
-  description = "Port the function should listen on"
-  type = number
-  
-}
+
 
 
 variable "mongodb_uri" {

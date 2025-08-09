@@ -52,13 +52,13 @@ jobs:
         working-directory: ./terraform-gcp-cloudfunctions
 
       - name: Terraform Plan
-        run: terraform plan -input=false -var="project_id=$PROJECT_ID" -var="region=$REGION" -var="frontend_origin=$FRONTEND_ORIGIN" -var="mongodb_uri=$MONGODB_URI" -var="port=$PORT" -var="function_zip_name=${{ env.FUNCTION_ZIP_NAME }}" -var="function_zip_path=${GITHUB_WORKSPACE}/${{ env.FUNCTION_ZIP_NAME }}"
+        run: terraform plan -input=false -var="project_id=$PROJECT_ID" -var="region=$REGION" -var="frontend_origin=$FRONTEND_ORIGIN" -var="mongodb_uri=$MONGODB_URI" -var="function_zip_name=${{ env.FUNCTION_ZIP_NAME }}" -var="function_zip_path=${GITHUB_WORKSPACE}/${{ env.FUNCTION_ZIP_NAME }}"
         working-directory: ./terraform-gcp-cloudfunctions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var="project_id=$PROJECT_ID" -var="region=$REGION" -var="frontend_origin=$FRONTEND_ORIGIN" -var="mongodb_uri=$MONGODB_URI" -var="port=$PORT"  -var="function_zip_name=${{ env.FUNCTION_ZIP_NAME }}" -var="function_zip_path=${GITHUB_WORKSPACE}/${{ env.FUNCTION_ZIP_NAME }}"
+        run: terraform apply -auto-approve -var="project_id=$PROJECT_ID" -var="region=$REGION" -var="frontend_origin=$FRONTEND_ORIGIN" -var="mongodb_uri=$MONGODB_URI" -var="function_zip_name=${{ env.FUNCTION_ZIP_NAME }}" -var="function_zip_path=${GITHUB_WORKSPACE}/${{ env.FUNCTION_ZIP_NAME }}"
         working-directory: ./terraform-gcp-cloudfunctions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
