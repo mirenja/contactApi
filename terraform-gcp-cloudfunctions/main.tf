@@ -1,32 +1,46 @@
-provider "google" {
-  project = var.project_id
-  region  = var.region
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 4.34.0"
+    }
+  }
+}
+resource "random_id" "default" {
+  byte_length = 8
 }
 
-resource "google_storage_bucket" "function_source" {
-  name     = "${var.project_id}-function-source"
-  location = var.region
-  force_destroy = true
-}
-resource "google_storage_bucket_object" "archive" {
-  bucket = google_storage_bucket.function_source.name
-  name   = var.function_zip_name
-  source = data.archive_file.function.output_path
+resource "google_storage_bucket" "default" {
+  name                        = "${random_id.default.hex}-${var.project_id}-gcf-source" 
+  location                    = var.region
+  uniform_bucket_level_access = true
 }
 
+data "archive_file" "default" {
+  type        = "zip"
+  output_path = "/tmp/function-source.zip"
+  source_dir  = "../"
+  excludes    = ["terraform-gcp-cloudfunctions/*", "venv/*", ".git/*"]
+}
+
+resource "google_storage_bucket_object" "object" {
+  name   = "function-source.zip"
+  bucket = google_storage_bucket.default.name
+  source = data.archive_file.default.output_path 
+}
 
 resource "google_cloudfunctions2_function" "default" {
-  name        = var.function_name
+  name        = var.function_name 
   location    = var.region
-  description = "Contact API Flask function"
+  description = "Contact API function"
 
   build_config {
     runtime     = "python311"
-    entry_point = var.entry_point
+    entry_point = "entry_point"
     source {
       storage_source {
-        bucket = google_storage_bucket.function_source.name
-        object = google_storage_bucket_object.archive.name
+        bucket = google_storage_bucket.default.name
+        object = google_storage_bucket_object.object.name
       }
     }
     environment_variables = {
@@ -39,22 +53,15 @@ resource "google_cloudfunctions2_function" "default" {
     max_instance_count = 2
     available_memory   = "256M"
     timeout_seconds    = 60
-    ingress_settings   = "ALLOW_ALL"
   }
-
-}
-
-data "archive_file" "function" {
-  type        = "zip"
-  source_dir  = "${path.module}/.."  # points to contactApi root where main.py lives
-  output_path = "${path.module}/../${var.function_zip_name}"
 }
 
 resource "google_cloud_run_service_iam_member" "member" {
   location = google_cloudfunctions2_function.default.location
   service  = google_cloudfunctions2_function.default.name
   role     = "roles/run.invoker"
-  member   = "allUsers" 
+  member   = "allUsers"
 }
+
 
 

@@ -10,12 +10,12 @@ variable "region" {
 
 variable "function_name" {
   description = "The name of the Cloud Run service."
-   default = "contact-api-fn"
+  type        = string
 }
 
 variable "entry_point"{
   description = "The name of the Artifact Registry Docker repository."
-  default = "app"
+  default = "main"
 }
 
 variable "source_dir" {
@@ -29,24 +29,11 @@ variable "frontend_origin" {
   description = "Allowed CORS origin"
 }
 
-
-
-
 variable "mongodb_uri" {
   type        = string
   description = "MongoDB URI"
 }
 
-
-variable "function_zip_name" {
-  description = "Name of the Cloud Function zip archive file"
-  type        = string
-}
-
-variable "function_zip_path" {
-  description = "Relative path to the Cloud Function zip archive file"
-  type        = string
-}
 
 
 
