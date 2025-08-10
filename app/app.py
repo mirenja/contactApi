@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+from os import environ
 from dotenv import load_dotenv
-from extensions.database import get_database
+from .extensions.database import get_database
 load_dotenv()
 
 
@@ -11,7 +12,6 @@ collection = db["contacts"]
 
 
 app = Flask(__name__)
-app.config.from_object('config')
 frontend_origin = os.getenv("FRONTEND_ORIGIN")
 port = int(os.environ.get('PORT'))
 # print(f"frontend origin {frontend_origin}")
