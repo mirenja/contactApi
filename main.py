@@ -3,22 +3,36 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
-from .extensions.database import get_database
+from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 
 load_dotenv()
 
 
 app = Flask(__name__)
 
-db = get_database()
-collection = db["contacts"]
-frontend_origin = os.getenv("FRONTEND_ORIGIN")
+MONGODB_URI = os.getenv("MONGODB_URI")
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN")
 
+def get_database():
+    # print(f"💽💽💽💽THE DATABASE URI is {CONNECTION_STRING}")
+    client = MongoClient(MONGODB_URI)
+    return client.get_default_database()
+
+try:
+    if not MONGODB_URI:
+        raise Exception("MONGODB_URI environment variable is not set.")
+    db = get_database()
+    collection = db["contacts"]
+    print("💽 Connected to API database:")
+except Exception as e:
+    print(f"An unexpected error occurred during database connection: {e}")
+    
 
 CORS(app,
      supports_credentials=True,
      resources={r"/api/*": {
-         "origins": frontend_origin,
+         "origins": FRONTEND_ORIGIN,
          "methods": ["POST", "OPTIONS"],
          "allow_headers": ["Content-Type", "Authorization"],
      }})
