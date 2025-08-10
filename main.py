@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 db = get_database()
 collection = db["contacts"]
+frontend_origin = os.getenv("FRONTEND_ORIGIN")
 
 
 CORS(app,
