@@ -29,7 +29,7 @@ resource "google_storage_bucket_object" "object" {
 }
 
 resource "google_cloudfunctions2_function" "default" {
-  name        = "${var.function_name}-${random_id.function_suffix.hex}"
+  name        = "${var.function_name}-${random_id.default.hex}"
   location    = var.region
   description = "Contact API function"
 
