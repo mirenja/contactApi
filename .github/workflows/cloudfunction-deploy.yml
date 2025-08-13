@@ -62,7 +62,5 @@ jobs:
         working-directory: ./terraform-gcp-cloudfunctions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
-      - name: Terraform output
-        run: terraform output
-        working-directory: ./terraform-gcp-cloudfunctions
+
 
