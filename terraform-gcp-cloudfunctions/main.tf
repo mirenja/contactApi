@@ -42,16 +42,18 @@ resource "google_cloudfunctions2_function" "default" {
         object = google_storage_bucket_object.object.name
       }
     }
-    environment_variables = {
-      FRONTEND_ORIGIN = var.frontend_origin
-      MONGODB_URI     = var.mongodb_uri
-    }
+  
   }
 
   service_config {
     max_instance_count = 2
     available_memory   = "256M"
     timeout_seconds    = 60
+
+    environment_variables = {
+    FRONTEND_ORIGIN = var.frontend_origin
+    MONGODB_URI     = var.mongodb_uri
+  }
   }
 }
 
