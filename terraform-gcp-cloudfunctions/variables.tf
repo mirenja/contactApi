@@ -34,6 +34,11 @@ variable "mongodb_uri" {
   description = "MongoDB URI"
 }
 
+variable "wif_service_account" {
+  description = "The service account allowed to invoke the Cloud Function"
+  type        = string
+}
+
 
 
 
